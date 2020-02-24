@@ -4,3 +4,4 @@
 //!
 //! [rs]: https://www.rust-lang.org/
 //! [ogc]: https://github.com/devkitPro/libogc
+#![no_std]
