@@ -4,6 +4,7 @@
 //!
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
+#![allow(unused_attributes)]
 #![feature(asm)]
 
 // Broadway Processor Utilities

@@ -8,7 +8,7 @@ pub fn ppc_nop() {
     unsafe { asm!("nop" :::: "volatile") }
 }
 
-// PowerPC Execution Synchronization
+/// PowerPC Execution Synchronization
 #[inline(always)]
 pub fn ppc_exec_sync() {
     unsafe { asm!("sync" :::: "volatile") }
