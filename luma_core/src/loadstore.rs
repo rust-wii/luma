@@ -37,6 +37,7 @@ pub fn lwbrx(base: u32, index: u32) -> u32 {
 }
 
 /// (`sthbrx`) PowerPC Store Instruction
+#[inline(always)]
 pub fn sthbrx(base: u32, index: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
@@ -47,10 +48,11 @@ pub fn sthbrx(base: u32, index: u32, value: u32) {
 }
 
 /// (`stwbrx`) PowerPC Store Instruction
+#[inline(always)]
 pub fn stwbrx(base: u32, index: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
-        asm!("sthbrx $0, $1, $2" :
+        asm!("stwbrx $0, $1, $2" :
             : "r"(value), "b%"(index), "r"(base) 
             : "memory" : "volatile");
     }
