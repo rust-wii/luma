@@ -187,6 +187,7 @@ pub fn mfmsr() -> u32 {
 }
 
 /// (`mtmsr`) PowerPC Register Instruction
+#[inline(always)]
 pub fn mtmsr(value: u32) {
     // Run the assembly instruction.
     unsafe {
@@ -195,6 +196,7 @@ pub fn mtmsr(value: u32) {
 }
 
 /// (`mtdec`) PowerPC Register Instruction
+#[inline(always)]
 pub fn mtdec(value: u32) {
     // Run the assembly instruction.
     unsafe {

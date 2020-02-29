@@ -3,11 +3,13 @@
 //! Contains functions for system instructions.
 
 /// PowerPC NOP Instruction
+#[inline(always)]
 pub fn ppc_nop() {
     unsafe { asm!("nop" :::: "volatile") }
 }
 
 // PowerPC Execution Synchronization
+#[inline(always)]
 pub fn ppc_exec_sync() {
     unsafe { asm!("sync" :::: "volatile") }
 }
@@ -36,6 +38,7 @@ pub fn ppc_halt() {
 ///
 /// NOTE: This sync is different from the ``sync``
 /// instruction! This sync is a system contextual sync.
+#[inline(always)]
 pub fn ppc_ctx_sync() {
     // Context Synchronization.
     unsafe {
