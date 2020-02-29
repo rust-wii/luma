@@ -11,3 +11,6 @@ pub mod processor;
 
 // Broadway Register Utilities
 pub mod register;
+
+// Broadway Integer Utilities
+pub mod integer;
