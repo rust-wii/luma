@@ -5,7 +5,7 @@
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
 #![allow(unused_attributes)]
-#![feature(asm)]
+#![feature(asm, global_asm)]
 
 // Broadway Processor Utilities
 pub mod processor;
@@ -21,3 +21,6 @@ pub mod loadstore;
 
 // Broadway I/O Utilities
 pub mod io;
+
+// Broadway Cache Subsystem
+pub mod cache;
