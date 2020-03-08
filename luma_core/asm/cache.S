@@ -9,7 +9,7 @@
 .set r4,4;
 .set r5,5;
 
-// --------------------------
+// --------------------------------------------------------------- //
 
 .global DCEnable
 DCEnable:
@@ -53,92 +53,92 @@ DCUnlock:
 
 .global DCInvalidateRange
 DCInvalidateRange:
-	cmplwi r4, 0   # zero or negative size?
-	blelr
-	clrlwi. r5, r3, 27  # check for lower bits set in address
-	beq 0f
-	addi r4, r4, 0x20 
+	cmplwi r4, 0   		# Check for zero or negative size
+	blelr				# Branch if less than or equal
+	clrlwi. r5, r3, 27  # Check for lower bits set in address
+	beq 0f				# Branch if equal or zero
+	addi r4, r4, 0x20 	# Add immediate
 0:
-	addi r4, r4, 0x1f
-	srwi r4, r4, 5
-	mtctr r4
+	addi r4, r4, 0x1f	# Add immediate
+	srwi r4, r4, 5		# Shift right word immediate
+	mtctr r4			# Move to register
 1:
-	dcbi r0, r3
-	addi r3, r3, 0x20
-	bdnz 1b
-	blr
+	dcbi r0, r3			# Data cache block invalidate
+	addi r3, r3, 0x20	# Add immediate
+	bdnz 1b				# Branch if decrem CTR doesnt equal zero
+	blr					# Return
 
 .global DCFlushRange
 DCFlushRange:
-	cmplwi r4, 0   # zero or negative size?
-	blelr
-	clrlwi. r5, r3, 27  # check for lower bits set in address
-	beq 0f
-	addi r4, r4, 0x20 
+	cmplwi r4, 0   		# Check for zero or negative size
+	blelr				# Branch if less than or equal
+	clrlwi. r5, r3, 27  # Check for lower bits set in address
+	beq 0f				# Branch if equal or zero
+	addi r4, r4, 0x20 	# Add immediate
 0:
-	addi r4, r4, 0x1f
-	srwi r4, r4, 5
-	mtctr r4
+	addi r4, r4, 0x1f	# Add immediate
+	srwi r4, r4, 5		# Shift right word immediate
+	mtctr r4			# Move to register
 1:
-	dcbf r0, r3
-	addi r3, r3, 0x20
-	bdnz 1b
-	sc
-	blr
+	dcbf r0, r3			# Data cache block flush
+	addi r3, r3, 0x20	# Add immediate
+	bdnz 1b				# Branch if decrem CTR doesnt equal zero
+	sc					# Contextual Sync
+	blr					# Return
 
 .global DCStoreRange
 DCStoreRange:
-	cmplwi r4, 0   # zero or negative size?
-	blelr
-	clrlwi. r5, r3, 27  # check for lower bits set in address
-	beq 0f
-	addi r4, r4, 0x20 
+	cmplwi r4, 0   		# Check for zero or negative size
+	blelr				# Branch if less than or equal
+	clrlwi. r5, r3, 27  # Check for lower bits set in address
+	beq 0f				# Branch if equal or zero
+	addi r4, r4, 0x20 	# Add immediate
 0:
-	addi r4, r4, 0x1f
-	srwi r4, r4, 5
-	mtctr r4
+	addi r4, r4, 0x1f	# Add immediate
+	srwi r4, r4, 5		# Shift right word immediate
+	mtctr r4			# Move to register
 1:
-	dcbst r0, r3
-	addi r3, r3, 0x20
-	bdnz 1b
-	sc
-	blr
+	dcbst r0, r3		# Data cache block store
+	addi r3, r3, 0x20	# Add immediate
+	bdnz 1b				# Branch if decrem CTR doesnt equal zero
+	sc					# Contextual Sync
+	blr					# Return
 
 .global DCFlushRangeNS
 DCFlushRangeNS:
-	cmplwi r4, 0   # zero or negative size?
-	blelr
-	clrlwi. r5, r3, 27  # check for lower bits set in address
-	beq 0f
-	addi r4, r4, 0x20 
+	cmplwi r4, 0   		# Check for zero or negative size
+	blelr				# Branch if less than or equal
+	clrlwi. r5, r3, 27  # Check for lower bits set in address
+	beq 0f				# Branch if equal or zero
+	addi r4, r4, 0x20 	# Add immediate
 0:
-	addi r4, r4, 0x1f
-	srwi r4, r4, 5
-	mtctr r4
+	addi r4, r4, 0x1f	# Add immediate
+	srwi r4, r4, 5		# Shift right word immediate
+	mtctr r4			# Move to register
 1:
-	dcbf r0, r3
-	addi r3, r3, 0x20
-	bdnz 1b
-	blr
+	dcbf r0, r3			# Data cache block flush
+	addi r3, r3, 0x20	# Add immediate
+	bdnz 1b				# Branch if decrem CTR doesnt equal zero
+	blr					# Return
 
 .global DCStoreRangeNS
 DCStoreRangeNS:
-	cmplwi r4, 0   # zero or negative size?
-	blelr
-	clrlwi. r5, r3, 27  # check for lower bits set in address
-	beq 0f
-	addi r4, r4, 0x20 
+	cmplwi r4, 0   		# Check for zero or negative size
+	blelr				# Branch if less than or equal
+	clrlwi. r5, r3, 27  # Check for lower bits set in address
+	beq 0f				# Branch if equal or zero
+	addi r4, r4, 0x20 	# Add immediate
 0:
-	addi r4, r4, 0x1f
-	srwi r4, r4, 5
-	mtctr r4
+	addi r4, r4, 0x1f	# Add immediate
+	srwi r4, r4, 5		# Shift right word immediate
+	mtctr r4			# Move to register
 1:
-	dcbst r0, r3
-	addi r3, r3, 0x20
-	bdnz 1b
-	blr
+	dcbst r0, r3		# Data cache block store
+	addi r3, r3, 0x20	# Add immediate
+	bdnz 1b				# Branch if decrem CTR doesnt equal zero
+	blr					# Return
 
-// --------------------------
+// --------------------------------------------------------------- //
 
 .global ICEnable
 ICEnable:
@@ -174,34 +174,34 @@ ICUnlock:
 
 .global ICInvalidateRange
 ICInvalidateRange:
-	cmplwi r4, 0   # zero or negative size?
-	blelr
-	clrlwi. r5, r3, 27  # check for lower bits set in address
-	beq 0f
-	addi r4, r4, 0x20 
+	cmplwi r4, 0   		# Check for zero or negative size
+	blelr				# Branch if less than or equal
+	clrlwi. r5, r3, 27  # Check for lower bits set in address
+	beq 0f				# Branch if equal or zero
+	addi r4, r4, 0x20 	# Add immediate
 0:
-	addi r4, r4, 0x1f
-	srwi r4, r4, 5
-	mtctr r4
+	addi r4, r4, 0x1f	# Add immediate
+	srwi r4, r4, 5		# Shift right word immediate
+	mtctr r4			# Move to register
 1:
-	icbi r0, r3
-	addi r3, r3, 0x20
-	bdnz 1b
-	sync
-	isync
-	blr
+	icbi r0, r3			# Instruction cache block invalidate
+	addi r3, r3, 0x20	# Add immediate
+	bdnz 1b				# Branch if decrem CTR doesnt equal zero
+	sync				# Sync
+	isync				# Instruction sync
+	blr					# Return
 
 .global ICFlashInvalidate
 ICFlashInvalidate:
-	mfspr	r3,HID0
-	ori		r3,r3,0x0800
-	mtspr	HID0,r3
-	isync
-	blr
+	mfspr	r3,HID0			# Move from register
+	ori		r3,r3,0x0800	# HID0[ICFI]
+	mtspr	HID0,r3			# Move to register
+	isync					# Instruction sync
+	blr						# Return
 
 .global ICBlockInvalidate
 ICBlockInvalidate:
-	icbi	r0,r3
-	blr
+	icbi	r0,r3	# Instruction cache block invalidate
+	blr				# Return
 
-// --------------------------
+// --------------------------------------------------------------- //
