@@ -45,3 +45,56 @@ pub fn ppc_ctx_sync() {
         asm!("sc" :::: "volatile");
     }
 }
+
+/// PowerPC CPU ISR Enable
+#[inline(always)]
+pub fn cpu_isr_enable() {
+    // Define a register variable.
+    let mut _val = 0u32;
+
+    // Run the assembly instruction.
+    unsafe {
+        asm!("mfmsr $0
+            ori $0,$0,0x8000
+            mtmsr $0"
+        : "=&r"(_val)
+        : "0"(_val) :: "volatile");
+    }
+}
+
+/// PowerPC CPU ISR Disable
+#[inline(always)]
+pub fn cpu_isr_disable(mut _isr_cookie: u32) {
+    // Define variables.
+    let mut _disable_mask = 0u32;
+    _isr_cookie = 0;
+
+    // Run the assembly instruction.
+    unsafe {
+        asm!("mfmsr $0
+            rlwinm $1,$0,0,17,15
+            mtmsr $1
+            extrwi $0,$0,1,16"
+        : "=&r"(_isr_cookie), "=&r"(_disable_mask)
+        : "0"(_isr_cookie), "1"(_disable_mask) :: "volatile");
+    }
+}
+
+/// PowerPC CPU ISR Restore
+#[inline(always)]
+pub fn cpu_isr_restore(mut _isr_cookie: u32) {
+    // Define mask variable.
+    let mut _enable_mask = 0u32;
+
+    // Run the assembly instruction.
+    unsafe {
+        asm!("cmpwi $0,0
+            beq 1f
+            mfmsr $1
+            ori $1,$1,0x8000
+            mtmsr $1s
+            1:"
+        : "=r"(_isr_cookie), "=&r"(_enable_mask)
+        : "0"(_isr_cookie), "1"(_enable_mask) :: "volatile");
+    }
+}
