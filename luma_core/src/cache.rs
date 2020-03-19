@@ -2,7 +2,7 @@
 //!
 //! Contains functions for the L1, L2, Data and Instruction caches.
 
-use crate::{processor, register::ImplRegister};
+use crate::{processor, mfspr, mtspr};
 
 global_asm!(include_str!("../asm/cache.S"));
 
@@ -161,14 +161,14 @@ extern "C" {
 ///    - L2FM=01 (64-byte fetch mode)
 ///    - BCO=1 (dual 64-byte castout buffers)
 ///    - L2MUM=1 (configured as 2-deep miss-under-miss cache)
-#[allow(non_snake_case)]
+#[allow(non_snake_case, unused_unsafe)]
 pub fn L2Enhance() {
     // Disable the CPU ISR
     let level = 0u32;
     processor::cpu_isr_disable(level);
 
     // Load the value from the HID4 register.
-    let mut hid4_value = ImplRegister::HID(4).mfspr();
+    let mut hid4_value = mfspr!(HID4);
 
     // Make sure the H4A is set before enhancing.
     if (hid4_value & 0x80000000) != 0 {
@@ -185,7 +185,7 @@ pub fn L2Enhance() {
             hid4_value |= 0x24200000;
 
             // Write the current HID4 value to the register.
-            ImplRegister::HID(4).mtspr(hid4_value);
+            mtspr!(hid4_value, HID4);
 
             // Re-enable the L2 cache.
             L2Enable();
