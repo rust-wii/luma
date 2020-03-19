@@ -92,7 +92,7 @@ pub fn cpu_isr_restore(mut _isr_cookie: u32) {
             beq 1f
             mfmsr $1
             ori $1,$1,0x8000
-            mtmsr $1s
+            mtmsr $1
             1:"
         : "=r"(_isr_cookie), "=&r"(_enable_mask)
         : "0"(_isr_cookie), "1"(_enable_mask) :: "volatile");
