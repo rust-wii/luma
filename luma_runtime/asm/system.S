@@ -6,7 +6,7 @@
 
 // --------------------------------------------------------------- //
 
-.global InitSystem
+.globl InitSystem
 InitSystem:
 	mflr    0
 	stw     0, 4(1)
@@ -56,7 +56,7 @@ InitSystem:
 	mtlr    0
 	blr
 
-.global InitPS
+.globl InitPS
 InitPS:
 	mflr	0
 	stw		0,4(1)
@@ -90,7 +90,7 @@ InitPS:
 	// Return
 	blr
 
-.global InitFPRS
+.globl InitFPRS
 InitFPRS:
 	// Enable the Floating Point Registers
 	mfmsr    3
@@ -98,9 +98,8 @@ InitFPRS:
 	mtmsr    3
 	
 	// Clear all of the FPR's to 0
-	lis		 3, zfloat@h
-	ori		 3, 3, zfloat@l
-	lfd		 0, 0(3)
+	lis	    3,zeroF@ha
+	lfd	    0,zeroF@l(3)
 	fmr      1,0
 	fmr      2,0
 	fmr      3,0
@@ -137,7 +136,7 @@ InitFPRS:
 	// Return
 	blr
 
-.global InitCache
+.globl InitCache
 InitCache:
 	mflr    0
 	stw     0,4(1)
@@ -174,6 +173,7 @@ L2Enabled:
 	mtlr    0
 	blr
 
-zfloat:
-	.float	0
-	.align	4
+zeroF:
+	.double 0.0
+zeroPS:
+	.float 0.0,0.0

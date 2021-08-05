@@ -2,12 +2,12 @@
 //	   Runtime Assembly	    //
 // ======================== //
 
-.extern _realmode
+.extern __crt0stack
 .extern InitCache,InitPS,InitFPRS
 
 // --------------------------------------------------------------- //
 
-.global InitHardware
+.globl InitHardware
 InitHardware:
 	// Enable the Floating Point Registers
 	mfmsr   3
@@ -21,15 +21,44 @@ InitHardware:
 	mtlr	31
 	blr
 
-.global InitGPRS
-InitGPRS:
+.globl ClearGPRS
+ClearGPRS:
 	// Clear all GPRs
-	.irp i, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
-	li \i,0
-	.endr
+	li      0,0
+	li      3,0
+	li      4,0
+	li      5,0
+	li      6,0
+	li      7,0
+	li      8,0
+	li      9,0
+	li      10,0
+	li      11,0
+	li      12,0
+	li      14,0
+	li      15,0
+	li      16,0
+	li      17,0
+	li      18,0
+	li      19,0
+	li      20,0
+	li      21,0
+	li      22,0
+	li      23,0
+	li      24,0
+	li      25,0
+	li      26,0
+	li      27,0
+	li      28,0
+	li      29,0
+	li      30,0
+	li      31,0
 
-	lis 1,_stack_bot@h ; ori 1,1,_stack_bot@l
-	stwu 0,-64(1)
+	lis		1,__crt0stack@h		    // we take 0x8173FFF0 as the topmost starting point for our stack,this gives us ~128Kb Stack
+	ori		1,1,__crt0stack@l
+	addi	1,1,-4
+	stw		0,0(1)
+	stwu	1,-56(1)
 
 	lis     2,_SDA2_BASE_@h
 	ori     2,2,_SDA2_BASE_@l   // Set the Small Data 2 (Read Only) base register.
@@ -37,15 +66,23 @@ InitGPRS:
 	ori     13,13,_SDA_BASE_@l  // Set the Small Data (Read\Write) base register.	
 	blr
 
-.global ClearBATS
+.globl ClearBATS
 ClearBATS:
 	mflr	31
 	oris	31,31,0x8000
 	lis		3,ConfigBATS@h
 	ori		3,3,ConfigBATS@l
-	bl		_realmode
+	bl		__realmode
 	mtlr	31
 	blr
+
+__realmode:
+	clrlwi	3,3,2
+	mtsrr0	3
+	mfmsr	3
+	rlwinm	3,3,0,28,25
+	mtsrr1	3
+	rfi
 
 ConfigBATS:
 	// HID0 = 00110c64:
@@ -115,7 +152,7 @@ ConfigBATS:
 	isync
 
 	mfmsr	3
-	ori		3,3,0x30 # MSR_DR|MSR_IR
+	ori		3,3,0x30 // MSR_DR|MSR_IR
 	mtsrr1	3
 	mflr	3
 	oris    3,3,0x8000
