@@ -5,7 +5,7 @@
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
 #![allow(unused_attributes)]
-#![feature(asm, global_asm)]
+#![feature(llvm_asm, global_asm)]
 
 // Broadway Processor Utilities
 pub mod processor;
