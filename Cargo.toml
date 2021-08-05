@@ -5,9 +5,11 @@ authors = ["rust-wii"]
 edition = "2018"
 
 [dependencies]
-luma_core = { path = "luma_core", version = "0.1" }
+luma_core = { path = "luma_core" }
+luma_runtime = { path = "luma_runtime" }
 
 [workspace]
 members = [
-    "luma_core"
+    "luma_core",
+    "luma_runtime"
 ]

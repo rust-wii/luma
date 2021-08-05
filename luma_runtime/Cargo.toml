@@ -1,0 +1,7 @@
+[package]
+name = "luma_runtime"
+version = "0.1.0"
+authors = ["rust-wii"]
+edition = "2018"
+
+[dependencies]
