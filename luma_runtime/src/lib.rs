@@ -19,7 +19,7 @@ global_asm!(include_str!("../asm/system.S"));
 /// This is the executable start function, which directly follows the entry point.
 #[cfg_attr(not(test), lang = "start")]
 #[cfg(not(test))]
-extern "C" fn start<T>(user_main: *const (), _argc: isize, _argv: *const *const u8) -> isize
+fn start<T>(user_main: fn(), _argc: isize, _argv: *const *const u8) -> isize
 where
     T: Termination,
 {
