@@ -3,6 +3,7 @@
 //! Contains functions for load and store instructions.
 
 /// (`lhbrx`) PowerPC Load Instruction
+#[inline(always)]
 pub fn lhbrx(base: u32, index: u32) -> u16 {
     // Define a register output variable.
     let mut register;
@@ -20,6 +21,7 @@ pub fn lhbrx(base: u32, index: u32) -> u16 {
 }
 
 /// (`lwbrx`) PowerPC Load Instruction
+#[inline(always)]
 pub fn lwbrx(base: u32, index: u32) -> u32 {
     // Define a register output variable.
     let mut register;

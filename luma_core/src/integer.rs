@@ -3,6 +3,7 @@
 //! Contains functions for integer instructions.
 
 /// (`cntlzw`) PowerPC Integer Instruction
+#[inline(always)]
 pub fn cntlzw(value: u32) -> u32 {
     // Define a register output variable.
     let mut register;

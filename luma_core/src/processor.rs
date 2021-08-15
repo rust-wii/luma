@@ -15,6 +15,7 @@ pub fn ppc_exec_sync() {
 }
 
 /// PowerPC System Halt
+#[inline(always)]
 pub fn ppc_halt() {
     // Sync execution.
     ppc_exec_sync();

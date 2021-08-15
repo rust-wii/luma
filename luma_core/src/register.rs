@@ -29,6 +29,7 @@ macro_rules! mtspr {
 }
 
 /// (`mfpvr`) PowerPC Register Instruction
+#[inline(always)]
 pub fn mfpvr() -> u32 {
     // Define a register output variable.
     let mut register;
@@ -43,6 +44,7 @@ pub fn mfpvr() -> u32 {
 }
 
 /// (`mfmsr`) PowerPC Register Instruction
+#[inline(always)]
 pub fn mfmsr() -> u32 {
     // Define a register output variable.
     let mut register;
