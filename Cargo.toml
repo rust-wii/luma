@@ -1,13 +1,21 @@
+cargo-features = ["strip"]
+
 [package]
 name = "luma"
 version = "0.1.0"
 authors = ["rust-wii"]
 edition = "2018"
 
+[profile]
+dev = { panic = "abort" }
+release = { panic = "abort", lto = true, codegen-units = 1, strip = "symbols", opt-level = "s" }
+
 [dependencies]
-luma_core = { path = "luma_core", version = "0.1" }
+luma_core = { path = "luma_core" }
+luma_runtime = { path = "luma_runtime" }
 
 [workspace]
 members = [
-    "luma_core"
+    "luma_core",
+    "luma_runtime"
 ]

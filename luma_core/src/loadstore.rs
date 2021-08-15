@@ -3,13 +3,14 @@
 //! Contains functions for load and store instructions.
 
 /// (`lhbrx`) PowerPC Load Instruction
+#[inline(always)]
 pub fn lhbrx(base: u32, index: u32) -> u16 {
     // Define a register output variable.
     let mut register;
 
     // Run the assembly instruction.
     unsafe {
-        asm!("lhbrx $0, $1, $2" 
+        llvm_asm!("lhbrx $0, $1, $2" 
             : "=r"(register)
             : "b%"(index), "r"(base) 
             : "memory" : "volatile");
@@ -20,13 +21,14 @@ pub fn lhbrx(base: u32, index: u32) -> u16 {
 }
 
 /// (`lwbrx`) PowerPC Load Instruction
+#[inline(always)]
 pub fn lwbrx(base: u32, index: u32) -> u32 {
     // Define a register output variable.
     let mut register;
 
     // Run the assembly instruction.
     unsafe {
-        asm!("lwbrx $0, $1, $2" 
+        llvm_asm!("lwbrx $0, $1, $2" 
             : "=r"(register)
             : "b%"(index), "r"(base) 
             : "memory" : "volatile");
@@ -41,7 +43,7 @@ pub fn lwbrx(base: u32, index: u32) -> u32 {
 pub fn sthbrx(base: u32, index: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
-        asm!("sthbrx $0, $1, $2" :
+        llvm_asm!("sthbrx $0, $1, $2" :
             : "r"(value), "b%"(index), "r"(base) 
             : "memory" : "volatile");
     }
@@ -52,7 +54,7 @@ pub fn sthbrx(base: u32, index: u32, value: u32) {
 pub fn stwbrx(base: u32, index: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
-        asm!("stwbrx $0, $1, $2" :
+        llvm_asm!("stwbrx $0, $1, $2" :
             : "r"(value), "b%"(index), "r"(base) 
             : "memory" : "volatile");
     }

@@ -10,7 +10,7 @@ pub fn read32(address: u32) -> u32 {
 
     // Run the assembly instruction.
     unsafe {
-        asm!("lwz $0,0($1) ; sync" 
+        llvm_asm!("lwz $0,0($1) ; sync" 
             : "=r"(register) 
             : "b"(0xc000_0000 | address)
             :: "volatile");
@@ -25,7 +25,7 @@ pub fn read32(address: u32) -> u32 {
 pub fn write32(address: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
-        asm!("stw $0,0($1) ; eieio" 
+        llvm_asm!("stw $0,0($1) ; eieio" 
             :: "r"(value), "b"(0xc000_0000 | address));
     }
 }
@@ -38,7 +38,7 @@ pub fn read16(address: u32) -> u16 {
 
     // Run the assembly instruction.
     unsafe {
-        asm!("lhz $0,0($1) ; sync" 
+        llvm_asm!("lhz $0,0($1) ; sync" 
             : "=r"(register) 
             : "b"(0xc000_0000 | address)
             :: "volatile");
@@ -53,7 +53,7 @@ pub fn read16(address: u32) -> u16 {
 pub fn write16(address: u32, value: u16) {
     // Run the assembly instruction.
     unsafe {
-        asm!("sth $0,0($1) ; eieio" 
+        llvm_asm!("sth $0,0($1) ; eieio" 
             :: "r"(value), "b"(0xc000_0000 | address));
     }
 }
@@ -66,7 +66,7 @@ pub fn read8(address: u32) -> u8 {
 
     // Run the assembly instruction.
     unsafe {
-        asm!("lbz $0,0($1) ; sync" 
+        llvm_asm!("lbz $0,0($1) ; sync" 
             : "=r"(register) 
             : "b"(0xc000_0000 | address)
             :: "volatile");
@@ -81,7 +81,7 @@ pub fn read8(address: u32) -> u8 {
 pub fn write8(address: u32, value: u8) {
     // Run the assembly instruction.
     unsafe {
-        asm!("stb $0,0($1) ; eieio" 
+        llvm_asm!("stb $0,0($1) ; eieio" 
             :: "r"(value), "b"(0xc000_0000 | address));
     }
 }
@@ -91,7 +91,7 @@ pub fn write8(address: u32, value: u8) {
 pub fn writef32(address: u32, value: f32) {
     // Run the assembly instruction.
     unsafe {
-        asm!("stfs $0,0($1) ; eieio" 
+        llvm_asm!("stfs $0,0($1) ; eieio" 
             :: "f"(value), "b"(0xc000_0000 | address));
     }
 }
