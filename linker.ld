@@ -45,6 +45,8 @@ SECTIONS
 		. = ALIGN(32);   /* REQUIRED. LD is flaky without it. */
 	} = 0
 
+	.rodata   : { *(.rodata) *(.rodata.*) } :data
+
 	.sdata2	: {
 		PROVIDE(_SDA2_BASE_ = .);
 		*(.sdata2)
@@ -94,3 +96,9 @@ SECTIONS
 		__bss_end = .;
 	} :bss2
 }
+
+__stack_addr = (__bss_start + SIZEOF(.bss) + 0x20000 + 7) & (-8);
+__stack_end = (__bss_start + SIZEOF(.bss));
+
+PROVIDE(__stack_addr = __stack_addr);
+PROVIDE(__stack_end = __stack_end);

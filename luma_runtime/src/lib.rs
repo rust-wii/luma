@@ -5,11 +5,22 @@
 //!
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
-#![feature(global_asm, lang_items, llvm_asm)]
+#![feature(global_asm, lang_items, llvm_asm, alloc_error_handler)]
 
-use core::panic::PanicInfo;
+use core::{alloc::Layout, panic::PanicInfo};
+use linked_list_allocator::LockedHeap;
 #[allow(unused_imports)]
 use luma_core::cache::*;
+
+// Import linker symbols for allocator initialization.
+extern "C" {
+    pub static __stack_addr: usize;
+    pub static __stack_end: usize;
+}
+
+// Global Allocator based on ``linked_list_allocator``.
+#[global_allocator]
+static ALLOCATOR: LockedHeap = LockedHeap::empty();
 
 // crt0 Implementation
 global_asm!(include_str!("../asm/crt0.S"));
@@ -23,6 +34,19 @@ fn start<T>(user_main: fn(), _argc: isize, _argv: *const *const u8) -> isize
 where
     T: Termination,
 {
+    // Coerce the linker symbols to usize for allocator init.
+    let stack_addr = unsafe { &__stack_addr } as *const _ as usize;
+    let stack_end = unsafe { &__stack_end } as *const _ as usize;
+
+    // Subtract the top of the stack from the bottom to get size.
+    let out_size = stack_addr - stack_end;
+
+    // Setup the allocator before the user_main is called.
+    unsafe {
+        ALLOCATOR.lock().init(stack_addr, out_size);
+    }
+
+    // Jump to user defined main function.
     let user_main: fn() -> T = unsafe { core::mem::transmute(user_main) };
     user_main();
 
@@ -40,6 +64,16 @@ impl Termination for () {}
 #[cfg_attr(not(test), panic_handler)]
 #[no_mangle]
 fn panic(_info: &PanicInfo) -> ! {
+    loop {
+        // A loop without side effects may be optimized away by LLVM. This issue can be avoided with
+        // a volatile no-op. See: https://github.com/rust-lang/rust/issues/28728
+        unsafe { llvm_asm!("" :::: "volatile") };
+    }
+}
+
+/// This function is called when the allocator produces an error.
+#[cfg_attr(not(test), alloc_error_handler)]
+fn alloc_error_handler(_layout: Layout) -> ! {
     loop {
         // A loop without side effects may be optimized away by LLVM. This issue can be avoided with
         // a volatile no-op. See: https://github.com/rust-lang/rust/issues/28728
