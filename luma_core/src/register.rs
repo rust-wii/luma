@@ -8,8 +8,8 @@ macro_rules! mfspr {
     ($R:tt) => {
         unsafe {
             let mut output: u32;
-            llvm_asm!( concat!("mfspr", " $0,", stringify!($R))
-                : "=r"(output) ::: "volatile"
+            asm!( concat!("mfspr", " {0},", stringify!($R)),
+                out(reg) output, options(nostack)
             );
             output
         }
@@ -21,8 +21,8 @@ macro_rules! mfspr {
 macro_rules! mtspr {
     ($val:expr, $R:tt) => {
         unsafe {
-            llvm_asm!( concat!("mtspr", ' ', stringify!($R), ",$0")
-                :: "r"($val) :: "volatile"
+            asm!( concat!("mtspr", ' ', stringify!($R), ",{0}"),
+                in(reg) $val, options(nostack)
             )
         }
     }
@@ -36,7 +36,9 @@ pub fn mfpvr() -> u32 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("mfpvr $0" : "=r"(register) ::: "volatile");
+        asm!("mfpvr {0}",
+            out(reg) register,
+            options(nostack));
     }
 
     // Return the register value.
@@ -51,7 +53,9 @@ pub fn mfmsr() -> u32 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("mfmsr $0" : "=r"(register) ::: "volatile");
+        asm!("mfmsr {0}",
+            out(reg) register,
+            options(nostack));
     }
 
     // Return the register value.
@@ -63,7 +67,9 @@ pub fn mfmsr() -> u32 {
 pub fn mtmsr(value: u32) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("mtmsr $0" :: "r"(value) :: "volatile");
+        asm!("mtmsr {0}",
+            in(reg) value,
+            options(nostack));
     }
 }
 
@@ -72,6 +78,8 @@ pub fn mtmsr(value: u32) {
 pub fn mtdec(value: u32) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("mtdec $0" :: "r"(value) :: "volatile");
+        asm!("mtdec {0}",
+            in(reg) value,
+            options(nostack));
     }
 }
