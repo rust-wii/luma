@@ -10,10 +10,10 @@ pub fn read32(address: u32) -> u32 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("lwz $0,0($1) ; sync" 
-            : "=r"(register) 
-            : "b"(0xc000_0000 | address)
-            :: "volatile");
+        asm!("lwz {0},0({1}) ; sync",
+            lateout(reg) register, 
+            in(reg) (0xc000_0000 | address),
+            options(nostack));
     }
 
     // Return the register value.
@@ -25,8 +25,9 @@ pub fn read32(address: u32) -> u32 {
 pub fn write32(address: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("stw $0,0($1) ; eieio" 
-            :: "r"(value), "b"(0xc000_0000 | address));
+        asm!("stw {0},0({1}) ; eieio", 
+            in(reg) value, in(reg) (0xc000_0000 | address), 
+            options(nostack));
     }
 }
 
@@ -38,10 +39,10 @@ pub fn read16(address: u32) -> u16 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("lhz $0,0($1) ; sync" 
-            : "=r"(register) 
-            : "b"(0xc000_0000 | address)
-            :: "volatile");
+        asm!("lhz {0},0({1}) ; sync", 
+            lateout(reg) register,
+            in(reg) (0xc000_0000 | address), 
+            options(nostack));
     }
 
     // Return the register value.
@@ -53,8 +54,9 @@ pub fn read16(address: u32) -> u16 {
 pub fn write16(address: u32, value: u16) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("sth $0,0($1) ; eieio" 
-            :: "r"(value), "b"(0xc000_0000 | address));
+        asm!("sth {0},0({1}) ; eieio",
+            in(reg) value, in(reg) (0xc000_0000 | address), 
+            options(nostack));
     }
 }
 
@@ -66,10 +68,10 @@ pub fn read8(address: u32) -> u8 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("lbz $0,0($1) ; sync" 
-            : "=r"(register) 
-            : "b"(0xc000_0000 | address)
-            :: "volatile");
+        asm!("lbz {0},0({1}) ; sync",
+            lateout(reg) register,
+            in(reg) (0xc000_0000 | address),
+            options(nostack));
     }
 
     // Return the register value.
@@ -81,8 +83,9 @@ pub fn read8(address: u32) -> u8 {
 pub fn write8(address: u32, value: u8) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("stb $0,0($1) ; eieio" 
-            :: "r"(value), "b"(0xc000_0000 | address));
+        asm!("stb {0},0({1}) ; eieio",
+            in(reg) value, in(reg) (0xc000_0000 | address),
+            options(nostack));
     }
 }
 
@@ -91,7 +94,8 @@ pub fn write8(address: u32, value: u8) {
 pub fn writef32(address: u32, value: f32) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("stfs $0,0($1) ; eieio" 
-            :: "f"(value), "b"(0xc000_0000 | address));
+        asm!("stfs {0},0({1}) ; eieio",
+            in(freg) value, in(reg) (0xc000_0000 | address),
+            options(nostack));
     }
 }

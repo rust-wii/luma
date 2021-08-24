@@ -10,10 +10,10 @@ pub fn lhbrx(base: u32, index: u32) -> u16 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("lhbrx $0, $1, $2" 
-            : "=r"(register)
-            : "b%"(index), "r"(base) 
-            : "memory" : "volatile");
+        asm!("lhbrx {0}, {1}, {2}",
+            lateout(reg) register,
+            in(reg_nonzero) index, in(reg) base, 
+            options(nostack));
     }
 
     // Return the register value.
@@ -28,10 +28,10 @@ pub fn lwbrx(base: u32, index: u32) -> u32 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("lwbrx $0, $1, $2" 
-            : "=r"(register)
-            : "b%"(index), "r"(base) 
-            : "memory" : "volatile");
+        asm!("lwbrx {0}, {1}, {2}",
+            lateout(reg) register,
+            in(reg_nonzero) index, in(reg) base,
+            options(nostack));
     }
 
     // Return the register value.
@@ -43,9 +43,9 @@ pub fn lwbrx(base: u32, index: u32) -> u32 {
 pub fn sthbrx(base: u32, index: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("sthbrx $0, $1, $2" :
-            : "r"(value), "b%"(index), "r"(base) 
-            : "memory" : "volatile");
+        asm!("sthbrx {0}, {1}, {2}",
+            in(reg) value, in(reg_nonzero) index, in(reg) base, 
+            options(nostack));
     }
 }
 
@@ -54,8 +54,8 @@ pub fn sthbrx(base: u32, index: u32, value: u32) {
 pub fn stwbrx(base: u32, index: u32, value: u32) {
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("stwbrx $0, $1, $2" :
-            : "r"(value), "b%"(index), "r"(base) 
-            : "memory" : "volatile");
+        asm!("stwbrx {0}, {1}, {2}",
+            in(reg) value, in(reg_nonzero) index, in(reg) base, 
+            options(nostack));
     }
 }

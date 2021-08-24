@@ -10,7 +10,10 @@ pub fn cntlzw(value: u32) -> u32 {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("cntlzw $0, $1" : "=r"(register) : "r"(value) :: "volatile");
+        asm!("cntlzw {0}, {1}",
+            lateout(reg) register,
+            in(reg) value,
+            options(nostack));
     }
 
     // Return the register value.

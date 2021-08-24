@@ -5,13 +5,13 @@
 /// PowerPC NOP Instruction
 #[inline(always)]
 pub fn ppc_nop() {
-    unsafe { llvm_asm!("nop" :::: "volatile") }
+    unsafe { asm!("nop", options(nostack)) }
 }
 
 /// PowerPC Execution Synchronization
 #[inline(always)]
 pub fn ppc_exec_sync() {
-    unsafe { llvm_asm!("sync" :::: "volatile") }
+    unsafe { asm!("sync", options(nostack)) }
 }
 
 /// PowerPC System Halt
@@ -22,16 +22,16 @@ pub fn ppc_halt() {
 
     // Loop execution.
     loop {
+        // NOP Instruction.
+        ppc_nop();
+
         unsafe {
-            // NOP Instruction.
-            ppc_nop();
-
             // Load Immediate.
-            llvm_asm!("li 3,0" :::: "volatile");
-
-            // NOP Instruction.
-            ppc_nop();
+            asm!("li 3,0", options(nostack));
         }
+
+        // NOP Instruction.
+        ppc_nop();
     }
 }
 
@@ -43,7 +43,7 @@ pub fn ppc_halt() {
 pub fn ppc_ctx_sync() {
     // Context Synchronization.
     unsafe {
-        llvm_asm!("sc" :::: "volatile");
+        asm!("sc", options(nostack));
     }
 }
 
@@ -55,11 +55,10 @@ pub fn cpu_isr_enable() {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("mfmsr $0
-            ori $0,$0,0x8000
-            mtmsr $0"
-        : "=&r"(_val)
-        : "0"(_val) :: "volatile");
+        asm!("mfmsr {0}",
+             "ori {0},{0},0x8000",
+             "mtmsr {0}",
+            inout(reg) _val, options(nostack));
     }
 }
 
@@ -72,12 +71,12 @@ pub fn cpu_isr_disable(mut _isr_cookie: u32) {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("mfmsr $0
-            rlwinm $1,$0,0,17,15
-            mtmsr $1
-            extrwi $0,$0,1,16"
-        : "=&r"(_isr_cookie), "=&r"(_disable_mask)
-        : "0"(_isr_cookie), "1"(_disable_mask) :: "volatile");
+        asm!("mfmsr {0}",
+             "rlwinm {1},{0},0,17,15",
+             "mtmsr {1}",
+             "extrwi {0},{0},1,16",
+            inout(reg) _isr_cookie, inout(reg) _disable_mask, 
+            options(nostack));
     }
 }
 
@@ -89,13 +88,13 @@ pub fn cpu_isr_restore(mut _isr_cookie: u32) {
 
     // Run the assembly instruction.
     unsafe {
-        llvm_asm!("cmpwi $0,0
-            beq 1f
-            mfmsr $1
-            ori $1,$1,0x8000
-            mtmsr $1
-            1:"
-        : "=r"(_isr_cookie), "=&r"(_enable_mask)
-        : "0"(_isr_cookie), "1"(_enable_mask) :: "volatile");
+        asm!("cmpwi {0},0",
+             "beq 1f",
+             "mfmsr {1}",
+             "ori {1},{1},0x8000",
+             "mtmsr {1}",
+             "1:",
+            inout(reg) _isr_cookie, inout(reg) _enable_mask,
+            options(nostack));
     }
 }
