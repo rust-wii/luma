@@ -29,3 +29,6 @@ pub mod cache;
 
 // Helper functions to allocate aligned memory on the heap
 pub mod allocate;
+
+// VI Subsystem
+pub mod vi;
