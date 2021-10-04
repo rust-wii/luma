@@ -64,21 +64,13 @@ impl Termination for () {}
 #[cfg_attr(not(test), panic_handler)]
 #[no_mangle]
 fn panic(_info: &PanicInfo) -> ! {
-    loop {
-        // A loop without side effects may be optimized away by LLVM. This issue can be avoided with
-        // a volatile no-op. See: https://github.com/rust-lang/rust/issues/28728
-        unsafe { llvm_asm!("" :::: "volatile") };
-    }
+    loop {}
 }
 
 /// This function is called when the allocator produces an error.
 #[cfg_attr(not(test), alloc_error_handler)]
 fn alloc_error_handler(_layout: Layout) -> ! {
-    loop {
-        // A loop without side effects may be optimized away by LLVM. This issue can be avoided with
-        // a volatile no-op. See: https://github.com/rust-lang/rust/issues/28728
-        unsafe { llvm_asm!("" :::: "volatile") };
-    }
+    loop {}
 }
 
 /// Error handler personality language item (current no-op, to satisfy clippy).
