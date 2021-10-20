@@ -6,7 +6,7 @@ edition = "2018"
 
 [profile]
 dev = { panic = "abort" }
-release = { panic = "abort", lto = true, codegen-units = 1, strip = "symbols", opt-level = "s" }
+release = { panic = "abort", lto = true, codegen-units = 1, opt-level = "s" }
 
 [dependencies]
 luma_core = { path = "luma_core" }
