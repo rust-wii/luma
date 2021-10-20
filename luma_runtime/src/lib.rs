@@ -43,7 +43,9 @@ where
 
     // Setup the allocator before the user_main is called.
     unsafe {
-        ALLOCATOR.lock().init(stack_addr, out_size);
+        ALLOCATOR
+            .lock()
+            .init(stack_addr, 24 * 1024 * 1024 - out_size);
     }
 
     // Jump to user defined main function.
