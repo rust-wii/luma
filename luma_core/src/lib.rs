@@ -5,7 +5,9 @@
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
 #![allow(unused_attributes)]
-#![feature(global_asm, asm)]
+#![feature(global_asm, asm, box_into_boxed_slice, allocator_api)]
+
+extern crate alloc;
 
 // Broadway Processor Utilities
 pub mod processor;
@@ -24,3 +26,9 @@ pub mod io;
 
 // Broadway Cache Subsystem
 pub mod cache;
+
+// Helper functions to allocate aligned memory on the heap
+pub mod allocate;
+
+// VI Subsystem
+pub mod vi;
