@@ -5,7 +5,13 @@
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
 #![allow(unused_attributes)]
-#![feature(global_asm, asm, box_into_boxed_slice, allocator_api)]
+#![feature(
+    global_asm,
+    asm,
+    asm_experimental_arch,
+    box_into_boxed_slice,
+    allocator_api
+)]
 
 extern crate alloc;
 

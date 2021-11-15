@@ -3,7 +3,6 @@
 //! The drawing has been ported from Weston’s clients/simple-shm.c
 
 #![no_std]
-#![feature(asm)]
 
 extern crate luma_core;
 extern crate luma_runtime;
