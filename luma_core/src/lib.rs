@@ -38,3 +38,6 @@ pub mod allocate;
 
 // VI Subsystem
 pub mod vi;
+
+// EXI Subsystem
+pub mod exi;
