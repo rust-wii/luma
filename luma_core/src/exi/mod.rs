@@ -4,6 +4,8 @@
 
 use crate::io::{read32, write32};
 
+pub mod usb_gecko;
+
 // Are we really on a GameCube in Dolphin?
 // TODO: Use 0xcd006800 instead when on a Wii.
 const EXI: u32 = 0xcc006800;
