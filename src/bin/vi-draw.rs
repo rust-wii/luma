@@ -62,11 +62,11 @@ fn paint_pixels(mut image: *mut u16, padding: u32, width: u32, height: u32, time
             let r2 = (x - halfw) * (x - halfw) + y2;
 
             if r2 < ir {
-                v = (r2 / 32 + time / 64) * 0x0080401;
+                v = (r2 / 32 + time / 4) * 0x0080401;
             } else if r2 < or {
-                v = (y + time / 32) * 0x0080401;
+                v = (y + time / 2) * 0x0080401;
             } else {
-                v = (x + time / 16) * 0x0080401;
+                v = (x + time) * 0x0080401;
             }
             v &= 0x00ffffff;
 
@@ -89,7 +89,7 @@ fn main() {
         unsafe { xfb.offset(i).write(0xff80) };
     }
 
-    // Then draw to it as fast as we can (that is, super slowly).
+    // Then draw to it as fast as we can.
     let mut i = 0;
     loop {
         paint_pixels(xfb, 20, 640, 480, i);
