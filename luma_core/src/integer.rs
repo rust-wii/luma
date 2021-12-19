@@ -2,6 +2,8 @@
 //!
 //! Contains functions for integer instructions.
 
+use core::arch::asm;
+
 /// (`cntlzw`) PowerPC Integer Instruction
 #[inline(always)]
 pub fn cntlzw(value: u32) -> u32 {

@@ -3,6 +3,7 @@
 //! Contains functions for the L1, L2, Data and Instruction caches.
 
 use crate::{mfspr, mtspr, processor};
+use core::arch::{asm, global_asm};
 
 global_asm!(include_str!("../asm/cache.S"));
 

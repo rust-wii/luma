@@ -13,6 +13,7 @@
     alloc_error_handler
 )]
 
+use core::arch::global_asm;
 use core::{alloc::Layout, panic::PanicInfo};
 use linked_list_allocator::LockedHeap;
 #[allow(unused_imports)]

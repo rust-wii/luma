@@ -2,6 +2,8 @@
 //!
 //! Contains functions for load and store instructions.
 
+use core::arch::asm;
+
 /// (`lhbrx`) PowerPC Load Instruction
 #[inline(always)]
 pub fn lhbrx(base: u32, index: u32) -> u16 {

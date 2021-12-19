@@ -2,6 +2,8 @@
 //!
 //! Contains functions for system instructions.
 
+use core::arch::asm;
+
 /// PowerPC NOP Instruction
 #[inline(always)]
 pub fn ppc_nop() {

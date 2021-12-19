@@ -2,6 +2,8 @@
 //!
 //! Contains functions for register instructions.
 
+use core::arch::asm;
+
 /// (`mfspr`) PowerPC Register Instruction
 #[macro_export]
 macro_rules! mfspr {
