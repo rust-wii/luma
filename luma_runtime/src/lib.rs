@@ -7,11 +7,14 @@
 #![no_std]
 #![feature(asm_experimental_arch, lang_items, alloc_error_handler)]
 
+extern crate alloc;
+
 use core::arch::global_asm;
 use core::{alloc::Layout, panic::PanicInfo};
 use linked_list_allocator::LockedHeap;
 #[allow(unused_imports)]
 use luma_core::cache::*;
+use luma_core::println;
 
 // Import linker symbols for allocator initialization.
 extern "C" {
@@ -66,7 +69,8 @@ impl Termination for () {}
 /// This function is called on panic.
 #[cfg_attr(not(test), panic_handler)]
 #[no_mangle]
-fn panic(_info: &PanicInfo) -> ! {
+fn panic(info: &PanicInfo) -> ! {
+    println!("{}", info);
     loop {}
 }
 
