@@ -5,14 +5,9 @@
 //!
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
-#![feature(
-    global_asm,
-    asm_experimental_arch,
-    lang_items,
-    llvm_asm,
-    alloc_error_handler
-)]
+#![feature(asm_experimental_arch, lang_items, alloc_error_handler)]
 
+use core::arch::global_asm;
 use core::{alloc::Layout, panic::PanicInfo};
 use linked_list_allocator::LockedHeap;
 #[allow(unused_imports)]

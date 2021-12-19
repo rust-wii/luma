@@ -2,6 +2,8 @@
 //!
 //! Contains functions for basic I/O.
 
+use core::arch::asm;
+
 /// Read a 32-bit value from an address.
 #[inline(always)]
 pub fn read32(address: u32) -> u32 {
