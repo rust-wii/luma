@@ -26,7 +26,7 @@ static mut GLOBAL_IRQ_HANDLER: [IrqHandler; 32] = [IrqHandler {
 macro_rules! irqcond {
     ($var: ident, $cond: expr, $mask: tt) => {
         if $cond {
-            $var = $var | 0x80000000 >> $mask;
+            $var = $var | $mask;
         }
     };
 }
