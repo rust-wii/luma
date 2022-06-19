@@ -35,6 +35,9 @@ pub mod allocate;
 // VI Subsystem
 pub mod vi;
 
+// IRQ Subsystem
+pub mod irq;
+
 #[no_mangle]
 #[inline(never)]
 pub unsafe extern "C" fn puts(unused: u32, message: *const u8) {
