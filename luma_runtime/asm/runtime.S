@@ -2,7 +2,7 @@
 //	   Runtime Assembly	    //
 // ======================== //
 
-.extern __crt0stack
+.extern __stack_addr
 .extern InitCache,InitPS,InitFPRS
 
 // --------------------------------------------------------------- //
@@ -54,8 +54,8 @@ ClearGPRS:
 	li      30,0
 	li      31,0
 
-	lis		1,__crt0stack@h		    // we take 0x8173FFF0 as the topmost starting point for our stack,this gives us ~128Kb Stack
-	ori		1,1,__crt0stack@l
+	lis		1,__stack_addr@h	// Use a 128 KiB stack, defined in linker.ld.
+	ori		1,1,__stack_addr@l
 	addi	1,1,-4
 	stw		0,0(1)
 	stwu	1,-56(1)
