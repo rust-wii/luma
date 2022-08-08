@@ -23,7 +23,9 @@ pub fn alloc_array_aligned<const LENGTH: usize>() -> Pin<Box<[u8; LENGTH]>> {
 }
 
 /// Convert a raw pointer and its length into a pinned array.
-pub unsafe fn ptr_as_pinned_array<T, const LENGTH: usize>(ptr: *mut T) -> Pin<Box<[T; LENGTH]>> {
+pub unsafe fn ptr_as_pinned_array<T: Copy, const LENGTH: usize>(
+    ptr: *mut T,
+) -> Pin<Box<[T; LENGTH]>> {
     let array = ptr as *mut [T; LENGTH];
     let boxed = Box::from_raw(array);
     Pin::from(boxed)
