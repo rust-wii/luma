@@ -47,9 +47,7 @@ _start:
 
 	.section .bss
 	.balign 8
-__crt0stack_end:
 	.space 0x4000
-__crt0stack:
 
 	.globl __system_argv
 	.section	.sdata,"aw",@progbits
