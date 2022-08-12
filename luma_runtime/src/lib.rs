@@ -10,6 +10,7 @@
 extern crate alloc;
 
 use core::arch::global_asm;
+use core::fmt::Write;
 use core::{alloc::Layout, panic::PanicInfo};
 use linked_list_allocator::LockedHeap;
 #[allow(unused_imports)]
