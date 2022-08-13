@@ -26,21 +26,21 @@ const VB: i32 = (-0.081 * (1 << 16) as f64) as i32;
 /// left as an exercise to the reader.
 ///
 /// An even better implementation would use the GPU to do the conversion.
-fn rgba2yuyv(pixel: u32, odd: bool) -> u16 {
-    let r: i32 = ((pixel >> 16) & 0xff) as i32;
-    let g: i32 = ((pixel >> 8) & 0xff) as i32;
-    let b: i32 = ((pixel >> 0) & 0xff) as i32;
+const fn rgba2yuyv(pixel: i32, odd: bool) -> u16 {
+    let r = (pixel >> 16) & 0xff;
+    let g = (pixel >> 8) & 0xff;
+    let b = pixel & 0xff;
 
-    let y: i32 = (YR * r + YG * g + YB * b) >> 16;
-    let u: i32 = (UR * r + UG * g + UB * b) >> 16;
-    let v: i32 = (VR * r + VG * g + VB * b) >> 16;
+    let y = (YR * r + YG * g + YB * b) >> 16;
+    let u = (UR * r + UG * g + UB * b) >> 16;
+    let v = (VR * r + VG * g + VB * b) >> 16;
 
     let chroma = if odd { u } else { v } + 128;
     (y as u16) << 8 | (chroma as u16)
 }
 
 /// Ported from Weston’s clients/simple-shm.c
-fn paint_pixels(mut image: *mut u16, padding: u32, width: u32, height: u32, time: u32) {
+fn paint_pixels(mut image: *mut u16, padding: i32, width: i32, height: i32, time: i32) {
     let halfh = padding + (height - padding * 2) / 2;
     let halfw = padding + (width - padding * 2) / 2;
 
@@ -56,7 +56,7 @@ fn paint_pixels(mut image: *mut u16, padding: u32, width: u32, height: u32, time
 
         image = unsafe { image.offset(padding as isize) };
         for x in padding..(width - padding) {
-            let mut v: u32;
+            let v;
 
             /* squared distance from center */
             let r2 = (x - halfw) * (x - halfw) + y2;
@@ -68,7 +68,6 @@ fn paint_pixels(mut image: *mut u16, padding: u32, width: u32, height: u32, time
             } else {
                 v = (x + time) * 0x0080401;
             }
-            v &= 0x00ffffff;
 
             unsafe { *image = rgba2yuyv(v, (x & 1) != 0) };
             image = unsafe { image.offset(1) };
