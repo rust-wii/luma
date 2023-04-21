@@ -37,6 +37,9 @@ pub mod cache;
 // Helper functions to allocate aligned memory on the heap
 pub mod allocate;
 
+// /shared2/sys/SYSCONF parser
+pub mod sysconf;
+
 // VI Subsystem
 pub mod vi;
 
