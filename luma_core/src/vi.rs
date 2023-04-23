@@ -6,11 +6,12 @@ use crate::allocate::alloc_aligned;
 use crate::io::{read16, write16, write32};
 use alloc::boxed::Box;
 use core::pin::Pin;
+use core::slice::{Chunks, ChunksMut};
 
 /// A struct representing the eXternal FrameBuffer, or XFB.  It represents the image that will be
 /// sent to the screen, in YUYV format.  It must be allocated as contiguous physical memory.
 pub struct Xfb {
-    data: Pin<Box<[u8]>>,
+    data: Pin<Box<[u16]>>,
     width: usize,
     height: usize,
 }
@@ -18,7 +19,7 @@ pub struct Xfb {
 impl Xfb {
     /// Allocate an XFB with the given width and height.
     pub fn allocate(width: usize, height: usize) -> Xfb {
-        let stride = width * 2;
+        let stride = width;
         let data = alloc_aligned(stride * height);
         Xfb {
             data,
@@ -37,19 +38,36 @@ impl Xfb {
         self.height
     }
 
-    /// Get the stride of this XFB, given the YUYV format this is always width × 2.
-    pub fn stride(&self) -> usize {
-        // YUYV always takes two bytes per pixel.
-        self.width * 2
+    /// Get the stride of this XFB.  This is always equal to width for now.
+    pub fn stride_in_u16(&self) -> usize {
+        self.width
+    }
+
+    /// Get the stride of this XFB in bytes.  Given the YUYV format this is always equal to
+    /// stride_in_u16() × 2.
+    pub fn stride_in_u8(&self) -> usize {
+        self.stride_in_u16() * 2
+    }
+
+    /// Get an immutable iterator over the rows of this XFB.
+    pub fn iter(&self) -> Chunks<u16> {
+        let stride = self.stride_in_u16();
+        self.data.chunks(stride)
+    }
+
+    /// Get a mutable iterator over the rows of this XFB.
+    pub fn iter_mut(&mut self) -> ChunksMut<u16> {
+        let stride = self.stride_in_u16();
+        self.data.chunks_mut(stride)
     }
 
     /// Return the raw pointer to this XFB.
-    pub fn as_ptr(&self) -> *const u8 {
+    pub fn as_ptr(&self) -> *const u16 {
         self.data.as_ptr()
     }
 
     /// Return the raw mutable pointer to this XFB.
-    pub fn as_mut_ptr(&mut self) -> *mut u8 {
+    pub fn as_mut_ptr(&mut self) -> *mut u16 {
         self.data.as_mut_ptr()
     }
 }
@@ -119,7 +137,7 @@ unsafe fn set_burst_blanking_interval_2(be2: u32, bs2: u32, be4: u32, bs4: u32) 
 }
 
 unsafe fn set_xfb(addr: u32, xfb: &Xfb, bottom: bool) {
-    let stride = xfb.stride() as u32;
+    let stride = xfb.stride_in_u8() as u32;
     let xfb = xfb.as_ptr();
     let mut xfb = xfb as u32;
     let shift;
