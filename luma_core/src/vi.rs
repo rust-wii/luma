@@ -5,12 +5,11 @@
 use crate::allocate::alloc_aligned;
 use crate::io::{read16, write16, write32};
 use alloc::boxed::Box;
-use core::pin::Pin;
 
 /// A struct representing the eXternal FrameBuffer, or XFB.  It represents the image that will be
 /// sent to the screen, in YUYV format.  It must be allocated as contiguous physical memory.
 pub struct Xfb {
-    data: Pin<Box<[u8]>>,
+    data: Box<[u16]>,
     width: usize,
     height: usize,
 }
@@ -18,7 +17,7 @@ pub struct Xfb {
 impl Xfb {
     /// Allocate an XFB with the given width and height.
     pub fn allocate(width: usize, height: usize) -> Xfb {
-        let stride = width * 2;
+        let stride = width;
         let data = alloc_aligned(stride * height);
         Xfb {
             data,
@@ -37,22 +36,60 @@ impl Xfb {
         self.height
     }
 
-    /// Get the stride of this XFB, given the YUYV format this is always width × 2.
+    /// Get the stride of this XFB, in u16.  Given the YUYV format this is always equal to width
+    /// for now.
     pub fn stride(&self) -> usize {
-        // YUYV always takes two bytes per pixel.
-        self.width * 2
+        self.width
+    }
+
+    /// Get a mutable iterator over the rows of this XFB.
+    pub fn iter_mut(&mut self) -> XfbIterMut {
+        XfbIterMut {
+            xfb: self,
+            cur_row: 0,
+        }
     }
 
     /// Return the raw pointer to this XFB.
-    pub fn as_ptr(&self) -> *const u8 {
+    pub fn as_ptr(&self) -> *const u16 {
         self.data.as_ptr()
     }
 
     /// Return the raw mutable pointer to this XFB.
-    pub fn as_mut_ptr(&mut self) -> *mut u8 {
+    pub fn as_mut_ptr(&mut self) -> *mut u16 {
         self.data.as_mut_ptr()
     }
 }
+
+pub struct XfbIterMut<'a> {
+    xfb: &'a mut Xfb,
+    cur_row: usize,
+}
+
+impl<'a> Iterator for XfbIterMut<'a> {
+    type Item = &'a mut [u16];
+
+    fn next(&mut self) -> Option<&'a mut [u16]> {
+        if self.cur_row < self.xfb.height {
+            let stride = self.xfb.stride();
+            let offset = self.cur_row * stride;
+            let slice = &mut self.xfb.data[offset..offset + stride];
+            self.cur_row += 1;
+
+            // TODO: Figure out how to unify the two lifetimes without transmute.
+            Some(unsafe { core::mem::transmute(slice) })
+        } else {
+            None
+        }
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.xfb.height - self.cur_row;
+        (remaining, Some(remaining))
+    }
+}
+
+impl<'a> ExactSizeIterator for XfbIterMut<'a> {}
 
 const BASE: u32 = 0xcc00_2000;
 
