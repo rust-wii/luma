@@ -5,13 +5,13 @@
 //!
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
-#![feature(asm_experimental_arch, lang_items, alloc_error_handler)]
+#![feature(asm_experimental_arch, lang_items)]
 
 extern crate alloc;
 
 use core::arch::global_asm;
 use core::fmt::Write;
-use core::{alloc::Layout, panic::PanicInfo};
+use core::panic::PanicInfo;
 use linked_list_allocator::LockedHeap;
 #[allow(unused_imports)]
 use luma_core::cache::*;
@@ -71,12 +71,6 @@ impl Termination for () {}
 #[no_mangle]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
-}
-
-/// This function is called when the allocator produces an error.
-#[cfg_attr(not(test), alloc_error_handler)]
-fn alloc_error_handler(_layout: Layout) -> ! {
     loop {}
 }
 
