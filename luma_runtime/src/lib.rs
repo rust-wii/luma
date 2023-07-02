@@ -5,13 +5,13 @@
 //!
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
-#![feature(asm_experimental_arch, lang_items, alloc_error_handler)]
+#![feature(asm_experimental_arch, lang_items)]
 
 extern crate alloc;
 
 use core::arch::global_asm;
 use core::fmt::Write;
-use core::{alloc::Layout, panic::PanicInfo};
+use core::panic::PanicInfo;
 use linked_list_allocator::LockedHeap;
 #[allow(unused_imports)]
 use luma_core::cache::*;
@@ -35,7 +35,7 @@ global_asm!(include_str!("../asm/system.S"));
 /// This is the executable start function, which directly follows the entry point.
 #[cfg_attr(not(test), lang = "start")]
 #[cfg(not(test))]
-fn start<T>(user_main: fn(), _argc: isize, _argv: *const *const u8) -> isize
+fn start<T>(user_main: fn() -> T, _argc: isize, _argv: *const *const u8, _sigpipe: u8) -> isize
 where
     T: Termination,
 {
@@ -54,7 +54,6 @@ where
     }
 
     // Jump to user defined main function.
-    let user_main: fn() -> T = unsafe { core::mem::transmute(user_main) };
     user_main();
 
     panic!("main() cannot return");
@@ -72,12 +71,6 @@ impl Termination for () {}
 #[no_mangle]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
-    loop {}
-}
-
-/// This function is called when the allocator produces an error.
-#[cfg_attr(not(test), alloc_error_handler)]
-fn alloc_error_handler(_layout: Layout) -> ! {
     loop {}
 }
 
