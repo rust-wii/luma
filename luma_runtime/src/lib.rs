@@ -50,7 +50,7 @@ where
     unsafe {
         ALLOCATOR
             .lock()
-            .init(stack_addr, 24 * 1024 * 1024 - out_size);
+            .init(stack_addr as *mut u8, 24 * 1024 * 1024 - out_size);
     }
 
     // Jump to user defined main function.

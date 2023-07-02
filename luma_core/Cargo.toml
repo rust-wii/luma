@@ -5,4 +5,4 @@ authors = ["rust-wii"]
 edition = "2018"
 
 [dependencies]
-bitflags = "1"
+bitflags = "2"

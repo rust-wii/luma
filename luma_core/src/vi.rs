@@ -79,7 +79,7 @@ unsafe fn set_vertical_timing(height: u16, equ: u16) {
 }
 
 unsafe fn configure(flags: ConfigureFlags) {
-    write16(BASE + 0x02, flags.bits);
+    write16(BASE + 0x02, flags.bits());
 }
 
 unsafe fn set_horizontal_timing(s1: u32, e1: u32, w1: u32, s2: u32, e2: u32, w2: u32) {
