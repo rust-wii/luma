@@ -5,6 +5,7 @@
 //!
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
+#![allow(internal_features)]
 #![feature(asm_experimental_arch, lang_items)]
 
 extern crate alloc;
