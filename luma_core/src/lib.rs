@@ -5,7 +5,13 @@
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
 #![allow(unused_attributes)]
-#![feature(asm_experimental_arch, box_into_boxed_slice, allocator_api)]
+#![feature(
+    asm_experimental_arch,
+    box_into_boxed_slice,
+    allocator_api,
+    exposed_provenance,
+    strict_provenance
+)]
 
 extern crate alloc;
 
@@ -36,6 +42,9 @@ pub mod allocate;
 
 // VI Subsystem
 pub mod vi;
+
+//IPC Subsystem
+pub mod ipc;
 
 /// Do nothing, this is for Dolphin’s use until we get actual USB Gecko support.
 ///
