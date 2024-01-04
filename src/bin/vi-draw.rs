@@ -40,7 +40,11 @@ const fn rgba2yuyv(pixel: i32, odd: bool) -> u16 {
 }
 
 /// Ported from Weston’s clients/simple-shm.c
-fn paint_pixels(mut image: *mut u16, padding: i32, width: i32, height: i32, time: i32) {
+fn paint_pixels(xfb: &mut Xfb, padding: i32, time: i32) {
+    let width = xfb.width() as i32;
+    let height = xfb.height() as i32;
+    let mut rows = xfb.iter_mut().skip(padding as usize);
+
     let halfh = padding + (height - padding * 2) / 2;
     let halfw = padding + (width - padding * 2) / 2;
 
@@ -50,30 +54,24 @@ fn paint_pixels(mut image: *mut u16, padding: i32, width: i32, height: i32, time
     or *= or;
     ir *= ir;
 
-    image = unsafe { image.offset((padding * width) as isize) };
     for y in padding..(height - padding) {
+        let row = rows.next().unwrap();
+
         let y2 = (y - halfh) * (y - halfh);
-
-        image = unsafe { image.offset(padding as isize) };
         for x in padding..(width - padding) {
-            let v;
-
             /* squared distance from center */
             let r2 = (x - halfw) * (x - halfw) + y2;
 
-            if r2 < ir {
-                v = (r2 / 32 + time / 4) * 0x0080401;
+            let v = if r2 < ir {
+                (r2 / 32 + time / 4) * 0x0080401
             } else if r2 < or {
-                v = (y + time / 2) * 0x0080401;
+                (y + time / 2) * 0x0080401
             } else {
-                v = (x + time) * 0x0080401;
-            }
+                (x + time) * 0x0080401
+            };
 
-            unsafe { *image = rgba2yuyv(v, (x & 1) != 0) };
-            image = unsafe { image.offset(1) };
+            row[x as usize] = rgba2yuyv(v, (x & 1) != 0);
         }
-
-        image = unsafe { image.offset(padding as isize) };
     }
 }
 
@@ -83,15 +81,15 @@ fn main() {
     let mut vi = Vi::setup(xfb);
 
     // First fill the XFB with white.
-    let xfb = vi.xfb().as_mut_ptr() as *mut u16;
-    for i in 0..(640 * 480) {
-        unsafe { xfb.offset(i).write(0xff80) };
+    let xfb = vi.xfb();
+    for row in xfb.iter_mut() {
+        row.fill(0xff80);
     }
 
     // Then draw to it as fast as we can.
     let mut i = 0;
     loop {
-        paint_pixels(xfb, 20, 640, 480, i);
+        paint_pixels(xfb, 20, i);
         i += 1;
     }
 }
