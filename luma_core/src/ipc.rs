@@ -1,7 +1,7 @@
-use core::ptr::from_exposed_addr_mut;
+use core::ptr;
 
 //bits 0..=31 = physical address of ipc request
-const HW_IPC_PPCMSG: usize = 0xCD00_0000usize; //from_exposed_addr_mut(0xCD00_0000);
+const HW_IPC_PPCMSG: *mut u32 = ptr::without_provenance_mut(0xCD00_0000);
 
 //bit 0 = X1 | Execute IPC request
 //bit 1 = Y2 | Acknowledge IPC request
@@ -9,10 +9,10 @@ const HW_IPC_PPCMSG: usize = 0xCD00_0000usize; //from_exposed_addr_mut(0xCD00_00
 //bit 3 = X2 | Relaunch IPC
 //bit 4 = IY1 | IPC request reply send out IPC interrupt
 //bit 5 = IY2 | IPC request acknowledge sends out IPC interrupt
-const HW_IPC_PPCCTRL: usize = 0xCD00_0004usize; //from_exposed_addr_mut(0xCD00_0004);
+const HW_IPC_PPCCTRL: *mut u32 = ptr::without_provenance_mut(0xCD00_0004);
 
 //bits 0..=31 = physical address of ipc request
-const HW_IPC_ARMMSG: usize = 0xCD00_0008usize; //from_exposed_addr_mut(0xCD00_0008);
+const HW_IPC_ARMMSG: *mut u32 = ptr::without_provenance_mut(0xCD00_0008);
 
 //bit 0 = Y1 | IPC request reply available
 //bit 1 = X2 | Relauch IPC
@@ -20,7 +20,7 @@ const HW_IPC_ARMMSG: usize = 0xCD00_0008usize; //from_exposed_addr_mut(0xCD00_00
 //bit 3 = Y2 | Acknowledge IPC request
 //bit 4 = IX1 | Execute ipc request send IPC interrupt
 //bit 5 = IX2 | Relaunch IPC sends IPC interrupt
-const HW_IPC_ARMCTRL: usize = 0xCD00_000Cusize; //from_exposed_addr_mut(0xCD00_000C);
+const HW_IPC_ARMCTRL: *mut u32 = ptr::without_provenance_mut(0xCD00_000C);
 
 /// IPC Message Address (for BOTH ARM AND PPC)
 #[repr(transparent)]
@@ -32,23 +32,19 @@ impl IpcMessageAddress {
     }
 
     pub fn read_ppc() -> Self {
-        let hw_ipc_ppcmsg = from_exposed_addr_mut::<u32>(HW_IPC_PPCMSG);
-        Self(unsafe { hw_ipc_ppcmsg.read_volatile() })
+        Self(unsafe { HW_IPC_PPCMSG.read_volatile() })
     }
 
     pub fn write_ppc(self) {
-        let hw_ipc_ppcmsg = from_exposed_addr_mut::<u32>(HW_IPC_PPCMSG);
-        unsafe { hw_ipc_ppcmsg.write_volatile(self.0) }
+        unsafe { HW_IPC_PPCMSG.write_volatile(self.0) }
     }
 
     pub fn read_arm() -> Self {
-        let hw_ipc_armmsg = from_exposed_addr_mut::<u32>(HW_IPC_ARMMSG);
-        Self(unsafe { hw_ipc_armmsg.read_volatile() })
+        Self(unsafe { HW_IPC_ARMMSG.read_volatile() })
     }
 
     pub fn write_arm(self) {
-        let hw_ipc_armmsg = from_exposed_addr_mut::<u32>(HW_IPC_ARMMSG);
-        unsafe { hw_ipc_armmsg.write_volatile(self.0) }
+        unsafe { HW_IPC_ARMMSG.write_volatile(self.0) }
     }
 
     pub fn address(&self) -> u32 {
@@ -79,13 +75,11 @@ impl PpcIpcControl {
     }
 
     pub fn read() -> Self {
-        let hw_ipc_ppcctrl = from_exposed_addr_mut::<u32>(HW_IPC_PPCCTRL);
-        Self(unsafe { hw_ipc_ppcctrl.read_volatile() })
+        Self(unsafe { HW_IPC_PPCCTRL.read_volatile() })
     }
 
     pub fn write(self) {
-        let hw_ipc_ppcctrl = from_exposed_addr_mut::<u32>(HW_IPC_PPCCTRL);
-        unsafe { hw_ipc_ppcctrl.write_volatile(self.0) }
+        unsafe { HW_IPC_PPCCTRL.write_volatile(self.0) }
     }
 
     pub fn execute(&self) -> bool {
@@ -153,13 +147,11 @@ impl ArmIpcControl {
     }
 
     pub fn read() -> Self {
-        let hw_ipc_armctrl = from_exposed_addr_mut::<u32>(HW_IPC_ARMCTRL);
-        Self(unsafe { hw_ipc_armctrl.read_volatile() })
+        Self(unsafe { HW_IPC_ARMCTRL.read_volatile() })
     }
 
     pub fn write(self) {
-        let hw_ipc_armctrl = from_exposed_addr_mut::<u32>(HW_IPC_ARMCTRL);
-        unsafe { hw_ipc_armctrl.write_volatile(self.0) }
+        unsafe { HW_IPC_ARMCTRL.write_volatile(self.0) }
     }
 
     pub fn execute(&self) -> bool {
