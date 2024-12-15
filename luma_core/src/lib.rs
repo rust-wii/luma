@@ -22,6 +22,9 @@ pub mod register;
 // Broadway Integer Utilities
 pub mod integer;
 
+// Access the Starlet running IOS
+pub mod ios;
+
 // Broadway Load and Store Utilities
 pub mod loadstore;
 
