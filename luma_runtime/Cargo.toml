@@ -2,7 +2,7 @@
 name = "luma_runtime"
 version = "0.1.0"
 authors = ["rust-wii"]
-edition = "2018"
+edition = "2024"
 
 [dependencies]
 luma_core = { path = "../luma_core" }

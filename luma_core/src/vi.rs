@@ -154,11 +154,11 @@ unsafe fn set_xfb(addr: u32, xfb: &Xfb, bottom: bool) {
 }
 
 unsafe fn set_top_xfb(xfb: &Xfb) {
-    set_xfb(BASE + 0x1c, xfb, false);
+    unsafe { set_xfb(BASE + 0x1c, xfb, false) };
 }
 
 unsafe fn set_bottom_xfb(xfb: &Xfb) {
-    set_xfb(BASE + 0x24, xfb, true);
+    unsafe { set_xfb(BASE + 0x24, xfb, true) };
 }
 
 /*
@@ -219,21 +219,23 @@ unsafe fn set_border() {
 }
 
 unsafe fn setup_interlaced(width: usize, height: usize, xfb: &Xfb) {
-    set_vertical_timing(height as u16, 6);
-    configure(ConfigureFlags::PAL | ConfigureFlags::INTERLACED | ConfigureFlags::ENABLE);
-    // TODO: figure out why 0x40 becomes 0x42 once read here…
-    set_horizontal_timing(71, 105, 429, 373, 162, 64);
-    set_field_vertical_timing(3, 24, 2, 25);
-    set_burst_blanking_interval_1(520, 12, 520, 12);
-    set_burst_blanking_interval_2(519, 13, 519, 13);
-    set_top_xfb(xfb);
-    set_bottom_xfb(xfb);
-    set_display_interrupts();
-    // 0x40 and 0x44 are display latch registers, unused?
-    set_scaled_width(width as u16);
-    set_aa_filters();
-    set_clock(27 /* MHz */);
-    set_border();
+    unsafe {
+        set_vertical_timing(height as u16, 6);
+        configure(ConfigureFlags::PAL | ConfigureFlags::INTERLACED | ConfigureFlags::ENABLE);
+        // TODO: figure out why 0x40 becomes 0x42 once read here…
+        set_horizontal_timing(71, 105, 429, 373, 162, 64);
+        set_field_vertical_timing(3, 24, 2, 25);
+        set_burst_blanking_interval_1(520, 12, 520, 12);
+        set_burst_blanking_interval_2(519, 13, 519, 13);
+        set_top_xfb(xfb);
+        set_bottom_xfb(xfb);
+        set_display_interrupts();
+        // 0x40 and 0x44 are display latch registers, unused?
+        set_scaled_width(width as u16);
+        set_aa_filters();
+        set_clock(27 /* MHz */);
+        set_border();
+    }
 }
 
 /// A struct representing the Video Interface, or VI.  This is the piece of hardware which scans

@@ -1,4 +1,4 @@
-use alloc::alloc::{alloc, Layout};
+use alloc::alloc::{Layout, alloc};
 use alloc::boxed::Box;
 use core::pin::Pin;
 use core::slice;
@@ -31,6 +31,6 @@ pub unsafe fn ptr_as_pinned_array<T: Copy, const LENGTH: usize>(
     ptr: *mut T,
 ) -> Pin<Box<[T; LENGTH]>> {
     let array = ptr as *mut [T; LENGTH];
-    let boxed = Box::from_raw(array);
+    let boxed = unsafe { Box::from_raw(array) };
     Pin::from(boxed)
 }
