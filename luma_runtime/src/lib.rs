@@ -19,7 +19,7 @@ use luma_core::cache::*;
 use luma_core::println;
 
 // Import linker symbols for allocator initialization.
-extern "C" {
+unsafe extern "C" {
     pub static __stack_addr: usize;
     pub static __stack_end: usize;
 }
@@ -69,7 +69,7 @@ impl Termination for () {}
 
 /// This function is called on panic.
 #[cfg_attr(not(test), panic_handler)]
-#[no_mangle]
+#[unsafe(no_mangle)]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
     loop {}
@@ -77,5 +77,5 @@ fn panic(info: &PanicInfo) -> ! {
 
 /// Error handler personality language item (current no-op, to satisfy clippy).
 #[cfg_attr(not(test), lang = "eh_personality")]
-#[no_mangle]
+#[unsafe(no_mangle)]
 extern "C" fn rust_eh_personality() {}

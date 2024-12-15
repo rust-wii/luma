@@ -46,10 +46,10 @@ pub mod ipc;
 ///
 /// Unlike puts(), it doesn’t require a null-terminated CStr, so in the optimal case we can pass a
 /// &str’s pointer as is, without doing any extra allocation.
-#[no_mangle]
+#[unsafe(no_mangle)]
 #[inline(never)]
-unsafe extern "C" fn __write_console(_unused: u32, message: *const u8, size: *const u32) {
-    asm!("/* {0} {1} */", in(reg) message, in(reg) size);
+extern "C" fn __write_console(_unused: u32, message: *const u8, size: *const u32) {
+    unsafe { asm!("/* {0} {1} */", in(reg) message, in(reg) size) };
 }
 
 /// Implements Write using Dolphin’s HLE.
@@ -59,7 +59,7 @@ impl fmt::Write for DolphinHle {
     #[inline(always)]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         let len = s.len() as u32;
-        unsafe { __write_console(0, s.as_ptr(), &len as *const u32) };
+        __write_console(0, s.as_ptr(), &len as *const u32);
         Ok(())
     }
 

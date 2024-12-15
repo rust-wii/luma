@@ -8,7 +8,7 @@ use core::arch::{asm, global_asm};
 global_asm!(include_str!("../asm/cache.S"));
 
 // Load cache functions from global assembly.
-extern "C" {
+unsafe extern "C" {
     /// Enable the L1 d(ata)-cache.
     ///
     /// **NOTE**: This function calls ``sync`` before enabling.
