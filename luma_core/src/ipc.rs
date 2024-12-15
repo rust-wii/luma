@@ -1,7 +1,6 @@
 //bits 0..=31 = physical address of ipc request
 const HW_IPC_PPCMSG: *mut u32 = 0xCD00_0000 as *mut u32;
 
-
 //bit 0 = X1 | Execute IPC request
 //bit 1 = Y2 | Acknowledge IPC request
 //bit 2 = Y1 | IPC request reply available
