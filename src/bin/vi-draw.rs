@@ -7,7 +7,10 @@
 extern crate luma_core;
 extern crate luma_runtime;
 
-use luma_core::vi::{Vi, Xfb};
+use luma_core::{
+    framebuffer::{rgba_to_xfb, Rgba},
+    vi::{Vi, Xfb},
+};
 
 // Constants used for the YUV conversion.
 const YR: i32 = (0.299 * (1 << 16) as f64) as i32;
@@ -75,6 +78,7 @@ fn paint_pixels(xfb: &mut Xfb, padding: i32, time: i32) {
     }
 }
 
+extern crate alloc;
 fn main() {
     // Setup the video interface.
     let xfb = Xfb::allocate(640, 480);
@@ -82,11 +86,12 @@ fn main() {
 
     // First fill the XFB with white.
     let xfb = vi.xfb();
-    for row in xfb.iter_mut() {
-        row.fill(0xff80);
-    }
-
-    // Then draw to it as fast as we can.
+    let mut rgba = alloc::vec![Rgba { r: 255, g: 255, b: 255, a: 255}; xfb.width() * xfb.height()];
+    rgba_to_xfb(xfb, &mut rgba);
+    luma_core::println!("GOT PAST RGBA");
+    // for row in xfb.iter_mut() {
+    //     row.fill(0xff80);
+    // }
     let mut i = 0;
     loop {
         paint_pixels(xfb, 20, i);
