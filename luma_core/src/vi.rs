@@ -50,13 +50,13 @@ impl Xfb {
     }
 
     /// Get an immutable iterator over the rows of this XFB.
-    pub fn iter(&self) -> Chunks<u16> {
+    pub fn iter(&self) -> Chunks<'_, u16> {
         let stride = self.stride_in_u16();
         self.data.chunks(stride)
     }
 
     /// Get a mutable iterator over the rows of this XFB.
-    pub fn iter_mut(&mut self) -> ChunksMut<u16> {
+    pub fn iter_mut(&mut self) -> ChunksMut<'_, u16> {
         let stride = self.stride_in_u16();
         self.data.chunks_mut(stride)
     }

@@ -6,7 +6,7 @@
 //! **NOTE**: This is currently in a very experimental state and is subject to change.
 #![no_std]
 #![allow(internal_features)]
-#![feature(asm_experimental_arch, lang_items)]
+#![feature(lang_items)]
 
 extern crate alloc;
 
@@ -69,7 +69,6 @@ impl Termination for () {}
 
 /// This function is called on panic.
 #[cfg_attr(not(test), panic_handler)]
-#[unsafe(no_mangle)]
 fn panic(info: &PanicInfo) -> ! {
     println!("{}", info);
     loop {}
@@ -77,5 +76,4 @@ fn panic(info: &PanicInfo) -> ! {
 
 /// Error handler personality language item (current no-op, to satisfy clippy).
 #[cfg_attr(not(test), lang = "eh_personality")]
-#[unsafe(no_mangle)]
 extern "C" fn rust_eh_personality() {}
