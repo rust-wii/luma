@@ -21,6 +21,9 @@ pub mod register;
 // Broadway Integer Utilities
 pub mod integer;
 
+// Access the Starlet running IOS
+pub mod ios;
+
 // Broadway Load and Store Utilities
 pub mod loadstore;
 
@@ -32,6 +35,9 @@ pub mod cache;
 
 // Helper functions to allocate aligned memory on the heap
 pub mod allocate;
+
+// /shared2/sys/SYSCONF parser
+pub mod sysconf;
 
 // VI Subsystem
 pub mod vi;
