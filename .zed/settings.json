@@ -1,0 +1,24 @@
+// Fixes LSP annoyances on Zed
+
+{
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        "cargo": {
+          "target": "powerpc-unknown-eabi.json",
+          "extraEnv": {
+            "CARGO_UNSTABLE_JSON_TARGET_SPEC": "true",
+          },
+        },
+        "check": {
+          "command": "check",
+          "target": "powerpc-unknown-eabi.json",
+          "extraArgs": ["-Z", "json-target-spec"],
+          "extraEnv": {
+            "CARGO_UNSTABLE_JSON_TARGET_SPEC": "true",
+          },
+        },
+      },
+    },
+  },
+}

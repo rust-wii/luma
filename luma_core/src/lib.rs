@@ -36,8 +36,11 @@ pub mod allocate;
 // VI Subsystem
 pub mod vi;
 
-//IPC Subsystem
+// IPC Subsystem
 pub mod ipc;
+
+// Serial Interface (SI) Subsystem Utilities
+pub mod serial_interface;
 
 /// Do nothing, this is for Dolphin’s use until we get actual USB Gecko support.
 ///
