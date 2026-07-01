@@ -1,3 +1,8 @@
+//! ``serial_interface`` module of ``luma_core``.
+//!
+//! Contains functions and definitions for the Serial Interface (SI),
+//! primarily used for GameCube controllers and Joy-Bus devices.
+
 use crate::io::{read32, write32};
 
 const SI_BASE: u32 = 0xCC006400;
