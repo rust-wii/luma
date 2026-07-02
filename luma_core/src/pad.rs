@@ -12,10 +12,10 @@ const CMD_READ_STATUS: u32 = 0x4003_0000;
 
 /// A snapshot of the controller's state at a point in time.
 /// - Holds the raw 8-byte payload from the Serial Interface.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct PadState {
-    word1: u32,
-    word2: u32,
+    pub word1: u32,
+    pub word2: u32,
 }
 
 impl PadState {

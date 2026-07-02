@@ -3,11 +3,7 @@
 //! Contains functions and definitions for the Serial Interface (SI),
 //! primarily used for GameCube controllers and Joy-Bus devices.
 
-use crate::{
-    breakpoint,
-    io::{read32, write32},
-    println,
-};
+use crate::io::{read32, write32};
 
 const SI_BASE: u32 = 0xCC006400;
 
@@ -42,7 +38,6 @@ impl SiCommControl {
 
     #[inline(always)]
     pub fn write(self) {
-        breakpoint();
         write32(SI_COMM_REG, self.0)
     }
 
