@@ -6,30 +6,34 @@ use core::arch::asm;
 
 /// Read a 32-bit value from an address.
 #[inline(always)]
+#[inline(always)]
 pub fn read32(address: u32) -> u32 {
-    // Define an output variable.
-    let mut register;
+    let value: u32;
 
-    // Run the assembly instruction.
     unsafe {
-        asm!("lwz {0},0({1}) ; sync",
-            lateout(reg) register, 
-            in(reg) (0xc000_0000 | address),
-            options(nostack));
+        asm!(
+            "lwz {0},0({1})",
+            "sync",
+            lateout(reg) value,
+            in(reg) (0xC000_0000 | address),
+            options(nostack)
+        );
     }
 
-    // Return the register value.
-    register
+    value
 }
 
 /// Write a 32-bit value to an address.
 #[inline(always)]
 pub fn write32(address: u32, value: u32) {
-    // Run the assembly instruction.
     unsafe {
-        asm!("stw {0},0({1}) ; eieio", 
-            in(reg) value, in(reg) (0xc000_0000 | address), 
-            options(nostack));
+        asm!(
+            "eieio",
+            "stw {0},0({1})",
+            in(reg) value,
+            in(reg) (0xC000_0000 | address),
+            options(nostack)
+        );
     }
 }
 
@@ -41,9 +45,9 @@ pub fn read16(address: u32) -> u16 {
 
     // Run the assembly instruction.
     unsafe {
-        asm!("lhz {0},0({1}) ; sync", 
+        asm!("lhz {0},0({1}) ; sync",
             lateout(reg) register,
-            in(reg) (0xc000_0000 | address), 
+            in(reg) (0xc000_0000 | address),
             options(nostack));
     }
 
@@ -57,7 +61,7 @@ pub fn write16(address: u32, value: u16) {
     // Run the assembly instruction.
     unsafe {
         asm!("sth {0},0({1}) ; eieio",
-            in(reg) value, in(reg) (0xc000_0000 | address), 
+            in(reg) value, in(reg) (0xc000_0000 | address),
             options(nostack));
     }
 }

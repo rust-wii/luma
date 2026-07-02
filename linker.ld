@@ -38,7 +38,7 @@ SECTIONS
 		KEEP (*crt0.o(*.init))
 		KEEP (*(.init))
 	} :text = 0
-	
+
 	.text	: {
 		*(.text)
 		*(.text.*)

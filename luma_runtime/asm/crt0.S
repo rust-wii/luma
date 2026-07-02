@@ -41,7 +41,7 @@ _start:
 	ori		5,5,__bss_end@l
 	sub		5,5,3
 	bl		memset
-	
+
 	bl main 	// Branch to the user code!
 	b .			// If the main function returns, then just loop endlessly.
 

@@ -3,7 +3,11 @@
 //! Contains functions and definitions for the Serial Interface (SI),
 //! primarily used for GameCube controllers and Joy-Bus devices.
 
-use crate::io::{read32, write32};
+use crate::{
+    breakpoint,
+    io::{read32, write32},
+    println,
+};
 
 const SI_BASE: u32 = 0xCC006400;
 
@@ -38,6 +42,7 @@ impl SiCommControl {
 
     #[inline(always)]
     pub fn write(self) {
+        breakpoint();
         write32(SI_COMM_REG, self.0)
     }
 
@@ -64,15 +69,22 @@ impl SiCommControl {
     /// Set the expected input length in bytes (usually 8 for normal controllers)
     #[inline(always)]
     pub fn with_in_len(&mut self, len: u32) -> &mut Self {
-        self.0 = bitfrob::u32_with_value(16, 22, self.0, len);
+        debug_assert!(len >= 1 && len <= 128);
+        self.0 = bitfrob::u32_with_value(16, 22, self.0, len - 1);
         self
     }
 
     /// Set the output length in bytes (usually 3 for normal commands)
     #[inline(always)]
     pub fn with_out_len(&mut self, len: u32) -> &mut Self {
-        self.0 = bitfrob::u32_with_value(0, 6, self.0, len);
+        debug_assert!(len >= 1 && len <= 128);
+        self.0 = bitfrob::u32_with_value(0, 6, self.0, len - 1);
         self
+    }
+
+    #[inline(always)]
+    pub const fn raw(&self) -> u32 {
+        self.0
     }
 }
 
@@ -126,17 +138,21 @@ impl SiChannel {
     /// `in_bytes` is the expected size of the response.
     #[inline(always)]
     pub fn begin_transfer(&self, out_bytes: u32, in_bytes: u32) {
-        let mut comm_ctrl = SiCommControl::read();
+        // 1. SPIN FIRST: Ensure the SI engine is idle before touching ANYTHING
+        while SiCommControl::read().transfer_active() {
+            core::hint::spin_loop();
+        }
 
-        comm_ctrl
-            .with_channel(self.port_index)
+        let mut comm = SiCommControl::new();
+
+        comm.with_channel(self.port_index)
             .with_out_len(out_bytes)
             .with_in_len(in_bytes)
             .with_start(true);
 
-        comm_ctrl.write();
+        comm.write();
 
-        // Spin-lock until the hardware clears the TSTART bit
+        // 2. Spin until completion
         while SiCommControl::read().transfer_active() {
             core::hint::spin_loop();
         }

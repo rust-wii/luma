@@ -8,7 +8,7 @@
 use crate::serial_interface::{SiChannel, SiPort};
 
 /// The standard Joy-Bus command to read controller state without rumble.
-const CMD_READ_STATUS: u32 = 0x0040_0300;
+const CMD_READ_STATUS: u32 = 0x4003_0000;
 
 /// A snapshot of the controller's state at a point in time.
 /// - Holds the raw 8-byte payload from the Serial Interface.
