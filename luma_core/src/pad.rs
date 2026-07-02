@@ -22,66 +22,66 @@ impl PadState {
     // Face Buttons
     #[inline(always)]
     pub fn button_start(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 28)
+        bitfrob::u32_get_bit(28, self.word1)
     }
 
     #[inline(always)]
     pub fn button_y(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 27)
+        bitfrob::u32_get_bit(27, self.word1)
     }
 
     #[inline(always)]
     pub fn button_x(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 26)
+        bitfrob::u32_get_bit(26, self.word1)
     }
 
     #[inline(always)]
     pub fn button_b(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 25)
+        bitfrob::u32_get_bit(25, self.word1)
     }
 
     #[inline(always)]
     pub fn button_a(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 24)
+        bitfrob::u32_get_bit(24, self.word1)
     }
 
     // Shoulder Buttons (Digital Clicks)
 
     #[inline(always)]
     pub fn shoulder_l(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 22)
+        bitfrob::u32_get_bit(22, self.word1)
     }
 
     #[inline(always)]
     pub fn shoulder_r(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 21)
+        bitfrob::u32_get_bit(21, self.word1)
     }
 
     #[inline(always)]
     pub fn button_z(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 20)
+        bitfrob::u32_get_bit(20, self.word1)
     }
 
     // Direction Pad
 
     #[inline(always)]
     pub fn dpad_up(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 19)
+        bitfrob::u32_get_bit(19, self.word1)
     }
 
     #[inline(always)]
     pub fn dpad_down(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 18)
+        bitfrob::u32_get_bit(18, self.word1)
     }
 
     #[inline(always)]
     pub fn dpad_right(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 17)
+        bitfrob::u32_get_bit(17, self.word1)
     }
 
     #[inline(always)]
     pub fn dpad_left(&self) -> bool {
-        bitfrob::u32_get_bit(self.word1, 16)
+        bitfrob::u32_get_bit(16, self.word1)
     }
 
     // Main Stick (Analogue 0-255, center is ~128)

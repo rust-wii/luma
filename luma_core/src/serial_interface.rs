@@ -44,13 +44,13 @@ impl SiCommControl {
     /// Check if a transfer is currently active (TSTART bit)
     #[inline(always)]
     pub fn transfer_active(&self) -> bool {
-        bitfrob::u32_get_bit(self.0, 31)
+        bitfrob::u32_get_bit(31, self.0)
     }
 
     /// Set the TSTART bit to begin a transfer
     #[inline(always)]
     pub fn with_start(&mut self, start: bool) -> &mut Self {
-        self.0 = bitfrob::u32_with_bit(self.0, 31, start);
+        self.0 = bitfrob::u32_with_bit(31, self.0, start);
         self
     }
 
