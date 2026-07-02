@@ -133,7 +133,7 @@ impl SiChannel {
     /// `in_bytes` is the expected size of the response.
     #[inline(always)]
     pub fn begin_transfer(&self, out_bytes: u32, in_bytes: u32) {
-        // 1. SPIN FIRST: Ensure the SI engine is idle before touching ANYTHING
+        // SPIN FIRST: Ensure the SI is idle before touching ANYTHING
         while SiCommControl::read().transfer_active() {
             core::hint::spin_loop();
         }
@@ -147,7 +147,7 @@ impl SiChannel {
 
         comm.write();
 
-        // 2. Spin until completion
+        // Spin until completion
         while SiCommControl::read().transfer_active() {
             core::hint::spin_loop();
         }
