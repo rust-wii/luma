@@ -36,7 +36,7 @@ pub mod allocate;
 // VI Subsystem
 pub mod vi;
 
-// IPC Subsystem
+//IPC Subsystem
 pub mod ipc;
 
 // Serial Interface (SI) Subsystem Utilities
@@ -53,15 +53,7 @@ pub mod pad;
 #[unsafe(no_mangle)]
 #[inline(never)]
 extern "C" fn __write_console(_unused: u32, message: *const u8, size: *const u32) {
-    unsafe {
-        core::arch::asm!(
-            "mr 4, {0}",
-            "mr 5, {1}",
-            in(reg) message,
-            in(reg) size,
-            options(nostack, preserves_flags)
-        );
-    }
+    unsafe { asm!("/* {0} {1} */", in(reg) message, in(reg) size) };
 }
 
 /// Implements Write using Dolphin’s HLE.
@@ -71,8 +63,17 @@ impl fmt::Write for DolphinHle {
     #[inline(always)]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         let len = s.len() as u32;
-        __write_console(0, s.as_ptr(), &len);
+        __write_console(0, s.as_ptr(), &len as *const u32);
         Ok(())
+    }
+
+    #[inline(always)]
+    fn write_fmt(&mut self, args: fmt::Arguments) -> fmt::Result {
+        if let Some(s) = args.as_str() {
+            self.write_str(s)
+        } else {
+            self.write_str(&args.to_string())
+        }
     }
 }
 
@@ -82,18 +83,7 @@ impl fmt::Write for DolphinHle {
 #[macro_export]
 macro_rules! println {
     ($($arg:tt)*) => {{
-        use $crate::DolphinHle;
-        use core::fmt::Write;
-
+        use luma_core::DolphinHle;
         write!(DolphinHle, $($arg)*).unwrap();
     }};
-}
-
-#[inline(always)]
-pub fn breakpoint() {
-    unsafe {
-        // 'twge r0, r0' is Trap Word Greater Than or Equal (if r0 >= r0, which is always true)
-        // This is the standard PowerPC hardware breakpoint instruction.
-        core::arch::asm!("twge r0, r0");
-    }
 }
